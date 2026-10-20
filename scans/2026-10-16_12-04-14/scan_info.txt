@@ -1,0 +1,6 @@
+scan started 2026-10-16_12-04-14
+points: 1
+edges_mm: none
+system range_mm: 0 to 229.614 (found by the limit switches)
+field units: Magnetic flux density (mT)
+readings: typed from the meter

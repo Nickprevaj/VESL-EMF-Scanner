@@ -1,0 +1,7 @@
+scan started 2026-10-16_12-32-58
+points: 8
+edges_mm: none
+graph zero: set with Z at rail position 149.532 mm
+rail range_mm: -149.532 to 80.044 (found by the limit switches)
+field units: Magnetic flux density (mT)
+readings: typed from the meter
