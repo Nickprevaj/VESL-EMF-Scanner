@@ -1,0 +1,100 @@
+EMF SCANNER - INSTRUCTIONS
+==========================
+
+WHAT IT DOES
+  A probe on a motorised rail moves along a magnet. At each stop you read the
+  gaussmeter and type the number in. The program plots magnetic field against
+  position as a curve and saves everything when you finish.
+
+BEFORE YOU START
+  1. Gaussmeter: turn it on, set DC-B for a magnet (AC-B only for an AC coil),
+     pick the smallest range that does not overload, and zero it with its offset
+     knob while the probe is far from the magnet.
+  2. Close the PlatformIO serial monitor (only one program can use the USB port).
+  3. In the VS Code terminal run:   python emf_scan.py
+     It finds the Arduino by itself. To force a port:  python emf_scan.py COM14
+     To list ports:                 python emf_scan.py --list
+  4. CLICK THE GRAPH WINDOW. Keys only work while that window is selected.
+
+THE WINDOW
+  Top line      What to do next (it changes as you go).
+  Graph         Magnetic field against position. Dots are your real readings,
+                the line is a smooth curve through them. The orange line is
+                where the probe is now. Dotted grey lines are the rail's start
+                and end.
+  Table         One row per recorded point, like a spreadsheet. While you are
+                typing a reading, its row is highlighted and already shows the
+                position. Scroll the table with the mouse wheel.
+  Bottom line   Messages about what just happened.
+
+SIMPLE WORKFLOW
+  1. Press C. The probe drives back until it presses the START switch, then
+     forward until it presses the END switch. That sets the rail length.
+  2. Press I, type a step in mm (for example 10), press ENTER.
+     Points will be taken at 0, 10, 20, 30 ... mm.
+  3. Optional: move the probe to the magnet's centre or edge and press Z to
+     make that spot position 0 on the graph and in the saved file.
+  4. Press T. The probe goes to the start, then stops at each position and
+     asks for a reading. Read the gaussmeter, type the number (use - for
+     negative), press ENTER. It moves to the next point by itself.
+  5. Watch the table fill and the curve build. After three points the curve
+     appears.
+  6. Press ENTER when finished to save. SPACE stops a scan at any time.
+
+KEYS
+  Move the probe
+    D        Forward until you stop it
+    A        Backward until you stop it
+    SPACE    Stop (also cancels a scan or a typing prompt)
+    W / S    Faster / slower
+    . and ,  Nudge 1 mm forward / back
+    V        Go back to zero (the rail start, or your Z point if you set one)
+
+  Set up
+    C        Calibrate: finds the START and END switches (press SPACE during
+             calibration to set either end by hand instead)
+    I        Set the distance between points (type 10 -> 10, 20, 30 ... mm)
+    Z        Make the probe's current spot position 0 (for example the magnet).
+             Pressing Z again moves the zero and re-measures every point.
+
+  Record
+    T        Scan the whole rail automatically using the step from I
+    R        Record one point right here
+    N        Move one step forward, then record
+    M        Record a magnet EDGE point (red diamond, marked EDGE in the table)
+    U        Undo the last point
+
+  Graph and files
+    L        Smooth curve / straight lines between points
+    ENTER    Save the data and the graph
+    X        Discard everything and close
+    F        Full screen on / off
+    H        Open this file
+
+  While typing a reading:  0-9 . -  to type, BACKSPACE to correct,
+  ENTER to accept, ESC to cancel.
+
+SAVED FILES
+  A new folder is made under "scans" next to emf_scan.py, named with the date and
+  time. Pressing ENTER again saves into the same folder.
+    scan_data.csv    Two columns only: position (mm) and Magnetic Field (mT).
+                     Positions are measured from your Z zero if you set one.
+    scan_graph.png   The graph.
+    scan_info.txt    Settings and the edge positions.
+
+LIMIT SWITCHES AND SAFETY
+  START switch = pin D12, END switch = pin D11 (pressed = pin pulled to GND).
+  The probe stops by itself at either switch, even before calibrating, and its
+  position is corrected each time a switch is hit. The motor also stops if the
+  computer stops talking to the Arduino. The motor is switched off whenever the
+  probe is standing still, so it draws no current and stays cool.
+
+IF SOMETHING GOES WRONG
+  "No scanner found"      Is the new firmware uploaded? Is the USB cable a data
+                          cable? Is the PlatformIO monitor closed?
+  Keys do nothing         Click the graph window first.
+  Probe will not go back  The START switch reads pressed. Check the status line
+                          for "switches" and the wiring.
+  Probe drifts when idle  The motor is off at rest. In main.cpp set
+                          RELEASE_WHEN_IDLE to false to hold it, then re-upload.
+  Readings look wrong     Check the gaussmeter range, mode and zero offset.
